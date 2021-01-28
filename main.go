@@ -2,19 +2,34 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"net"
 	"time"
 )
 
-const DatabaseAddr string = "127.0.0.1"
-const DatabaseUser string = "root"
-const DatabasePass string = "password"
-const DatabaseTable string = "mirai"
+var (
+	DatabaseAddr string
+	DatabasePort int
+	DatabaseUser string
+	DatabasePass string
+	DatabaseName string
+	database     *Database
+)
 
 var clientList *ClientList = NewClientList()
-var database *Database = NewDatabase(DatabaseAddr, DatabaseUser, DatabasePass, DatabaseTable)
 
+func init() {
+	flag.StringVar(&DatabaseAddr, "h", "127.0.0.1", "Mysql host")
+	flag.IntVar(&DatabasePort, "P", 3306, "Mysql port")
+	flag.StringVar(&DatabaseUser, "u", "lvsj", "Mysql user name")
+	flag.StringVar(&DatabasePass, "p", "123456", "Mysql password")
+	flag.StringVar(&DatabaseName, "db", "mirai", "Mysql dbName")
+	flag.Parse()
+
+	fmt.Println(DatabaseAddr, DatabasePort, DatabaseUser, DatabasePass, DatabaseName)
+	database = NewDatabase(DatabaseAddr, DatabasePort, DatabaseUser, DatabasePass, DatabaseName)
+}
 func main() {
 	tel, err := net.Listen("tcp", "0.0.0.0:23")
 	if err != nil {

@@ -20,8 +20,8 @@ type AccountInfo struct {
 	admin    int
 }
 
-func NewDatabase(dbAddr string, dbUser string, dbPassword string, dbName string) *Database {
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s", dbUser, dbPassword, dbAddr, dbName))
+func NewDatabase(dbAddr string, dbPort int, dbUser string, dbPassword string, dbName string) *Database {
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbUser, dbPassword, dbAddr, dbPort, dbName))
 	if err != nil {
 		fmt.Println(err)
 	}
